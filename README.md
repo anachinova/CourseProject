@@ -193,3 +193,38 @@ GitHub was used for:
 
 ```bash
 git clone https://github.com/anachinova/CourseProject.git
+```
+
+## 2. Open project
+
+Open the solution in **Visual Studio**.
+
+---
+
+## 3. Restore packages
+
+Restore NuGet packages.
+
+---
+
+## 4. Run application
+
+Run the project using **IIS Express** or **Kestrel**.
+
+---
+
+# Test Accounts
+
+## Administrator
+
+```text
+Email: admin@gmail.com
+Password: password
+```
+
+##Registered User
+
+```text
+Email: ivan@gmail.com
+Password: password
+```
