@@ -1,0 +1,134 @@
+﻿@model CourseProject.ViewModels.AdvertisementEditViewModel
+
+@{
+    ViewData["Title"] = "Редагування оголошення";
+}
+
+<div class="container">
+    <div class="form-card">
+        <h1>Редагування оголошення</h1>
+        <p>Змініть інформацію про ваше оголошення.</p>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["SuccessMessage"]
+            </div>
+        }
+
+        <form asp-controller="Advertisements"
+              asp-action="Edit"
+              method="post"
+              enctype="multipart/form-data">
+
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" asp-for="Id" />
+
+            <div class="mb-3">
+                <label asp-for="Title" class="form-label">Назва оголошення</label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">Опис</label>
+                <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Price" class="form-label">Ціна, грн</label>
+                    <input asp-for="Price" type="number" step="0.01" class="form-control" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="City" class="form-label">Місто</label>
+                    <input asp-for="City" class="form-control" />
+                    <span asp-validation-for="City" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="CategoryId" class="form-label">Категорія</label>
+                <select asp-for="CategoryId"
+                        asp-items="Model.Categories"
+                        class="form-select">
+                    <option value="">Оберіть категорію</option>
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Поточні фотографії</label>
+
+                @if (Model.ExistingImages != null && Model.ExistingImages.Any())
+                {
+                    <div class="edit-images-grid">
+                        @foreach (var image in Model.ExistingImages)
+                        {
+                            <div class="edit-image-item">
+                                <img src="@image.Path" alt="Фото оголошення" />
+
+                                <button type="submit"
+                                        class="btn btn-outline-danger btn-sm"
+                                        form="delete-image-@image.Id">
+                                    Видалити фото
+                                </button>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">Фото ще не додані.</p>
+                }
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="NewImages" class="form-label">Додати нові фото</label>
+                <input asp-for="NewImages"
+                       type="file"
+                       class="form-control"
+                       multiple
+                       accept="image/*" />
+                <span asp-validation-for="NewImages" class="text-danger"></span>
+                <small class="text-muted">Максимум 10 фотографій в одному оголошенні.</small>
+            </div>
+
+            <div class="form-actions">
+                <a class="btn btn-outline-secondary"
+                   asp-controller="Advertisements"
+                   asp-action="My">
+                    Скасувати
+                </a>
+
+                <button type="submit" class="btn btn-success">
+                    Зберегти зміни
+                </button>
+            </div>
+        </form>
+
+        @if (Model.ExistingImages != null && Model.ExistingImages.Any())
+        {
+            @foreach (var image in Model.ExistingImages)
+            {
+                <form id="delete-image-@image.Id"
+                      asp-controller="Advertisements"
+                      asp-action="DeleteImage"
+                      method="post"
+                      style="display:none;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="imageId" value="@image.Id" />
+                    <input type="hidden" name="advertisementId" value="@Model.Id" />
+                </form>
+            }
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

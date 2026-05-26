@@ -1,0 +1,126 @@
+@model List<CourseProject.Domain.Models.Advertisement>
+
+@{
+    ViewData["Title"] = "Головна";
+    var categories = ViewBag.Categories as IEnumerable<string> ?? Enumerable.Empty<string>();
+}
+
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-card">
+            <h1>Знайдіть потрібне оголошення</h1>
+            <p>Купуйте, продавайте та обмінюйте товари швидко і зручно.</p>
+
+            <form class="search-form search-form-extended"
+                  asp-controller="Home"
+                  asp-action="Index"
+                  method="get">
+
+                <input name="keyword"
+                       type="text"
+                       class="form-control"
+                       placeholder="Що шукаєте?"
+                       value="@ViewBag.Keyword" />
+
+                <select name="categoryName" class="form-select">
+                    <option value="Усі категорії" selected="@(ViewBag.CategoryName == null || ViewBag.CategoryName == "Усі категорії")">
+                        Усі категорії
+                    </option>
+
+                    @foreach (var category in categories)
+                    {
+                        <option value="@category" selected="@(ViewBag.CategoryName == category)">
+                            @category
+                        </option>
+                    }
+                </select>
+
+                <input name="city"
+                       type="text"
+                       class="form-control"
+                       placeholder="Місто"
+                       value="@ViewBag.City" />
+
+                <input name="minPrice"
+                       type="number"
+                       class="form-control"
+                       placeholder="Ціна від"
+                       value="@ViewBag.MinPrice" />
+
+                <input name="maxPrice"
+                       type="number"
+                       class="form-control"
+                       placeholder="Ціна до"
+                       value="@ViewBag.MaxPrice" />
+
+                <select name="sortBy" class="form-select">
+                    <option value="" selected="@(ViewBag.SortBy == null || ViewBag.SortBy == "")">
+                        Новіші
+                    </option>
+                    <option value="price_asc" selected="@(ViewBag.SortBy == "price_asc")">
+                        Спочатку дешевші
+                    </option>
+                    <option value="price_desc" selected="@(ViewBag.SortBy == "price_desc")">
+                        Спочатку дорожчі
+                    </option>
+                </select>
+
+                <button type="submit" class="btn btn-success">
+                    Пошук
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<section class="ads-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Останні оголошення</h2>
+            <span>Знайдено @(Model?.Count ?? 0) оголошень</span>
+        </div>
+
+        @if (Model == null || !Model.Any())
+        {
+            <div class="empty-state">
+                <h3>Оголошень не знайдено</h3>
+                <p>Спробуйте змінити параметри пошуку.</p>
+            </div>
+        }
+        else
+        {
+            <div class="ads-grid">
+                @foreach (var ad in Model)
+                {
+                    var firstImage = ad.Images != null && ad.Images.Any()
+                        ? ad.Images.First().Path
+                        : "/images/ad-phone.jpg";
+
+                    <a class="ad-card"
+                       asp-controller="Advertisements"
+                       asp-action="Details"
+                       asp-route-id="@ad.Id">
+
+                        <img src="@firstImage" alt="@ad.Title" />
+
+                        <div class="ad-card-body">
+                            <h3>@ad.Title</h3>
+
+                            <p class="price">
+                                @ad.Price грн
+                            </p>
+
+                            <p class="location">
+                                @ad.City
+                            </p>
+
+                            <p class="category">
+                                @(ad.Category?.Name ?? "Без категорії")
+                            </p>
+                        </div>
+                    </a>
+                }
+            </div>
+        }
+    </div>
+</section>

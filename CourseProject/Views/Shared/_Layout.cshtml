@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - EasyMarket</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="main-header">
+        <nav class="navbar navbar-expand-lg bg-white border-bottom">
+            <div class="container">
+                <a class="navbar-brand fw-bold brand-logo" asp-controller="Home" asp-action="Index">
+                    EasyMarket
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="mainNavbar">
+                    <ul class="navbar-nav me-auto ms-4 mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">Головна</a>
+                        </li>
+
+                        @if (Context.Session.GetString("UserRole") == "RegisteredUser")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Advertisements" asp-action="My">Мої оголошення</a>
+                            </li>
+                        }
+
+                        @if (Context.Session.GetString("UserRole") == "Admin")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="Index">Адмін-панель</a>
+                            </li>
+                        }
+                    </ul>
+
+                    <div class="d-flex gap-2">
+                        @if (Context.Session.GetString("UserRole") == null)
+                        {
+                            <a class="btn btn-outline-success" asp-controller="Auth" asp-action="Login">
+                                Увійти
+                            </a>
+
+                            <a class="btn btn-success" asp-controller="Auth" asp-action="Register">
+                                Зареєструватися
+                            </a>
+                        }
+                        else
+                        {
+                            @if (Context.Session.GetString("UserRole") == "RegisteredUser")
+                            {
+                                <a class="btn btn-success" asp-controller="Advertisements" asp-action="Create">
+                                    Подати оголошення
+                                </a>
+                            }
+
+                            @if (Context.Session.GetString("UserRole") == "Admin")
+                            {
+                                <a class="btn btn-success" asp-controller="Admin" asp-action="Index">
+                                    Адмін-панель
+                                </a>
+                            }
+
+                            <a class="btn btn-outline-danger" asp-controller="Auth" asp-action="Logout">
+                                Вийти
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="page-content">
+        @RenderBody()
+    </main>
+
+    <footer class="footer border-top">
+        <div class="container py-3 text-muted small">
+            © 2026 EasyMarket — система оголошень
+        </div>
+    </footer>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

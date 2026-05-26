@@ -1,0 +1,41 @@
+﻿@model CourseProject.ViewModels.LoginViewModel
+
+@{
+    ViewData["Title"] = "Вхід";
+}
+
+<div class="container">
+    <div class="auth-card">
+        <h1>Вхід</h1>
+        <p>Увійдіть до свого акаунта, щоб керувати оголошеннями.</p>
+
+        <form asp-controller="Auth" asp-action="Login" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="Login" class="form-label">Логін або email</label>
+                <input asp-for="Login" type="text" class="form-control" placeholder="Введіть логін або email" />
+                <span asp-validation-for="Login" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label">Пароль</label>
+                <input asp-for="Password" type="password" class="form-control" placeholder="Введіть пароль" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100">
+                Увійти
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            Немає акаунта?
+            <a asp-controller="Auth" asp-action="Register">Зареєструватися</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

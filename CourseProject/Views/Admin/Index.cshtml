@@ -1,0 +1,117 @@
+@model List<CourseProject.Domain.Models.Advertisement>
+
+@{
+    ViewData["Title"] = "Адмін-панель";
+}
+
+<section class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-1">Адмін-панель</h1>
+            <p class="text-muted mb-0">Керування користувачами та оголошеннями EasyMarket.</p>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <div class="text-muted small">Користувачі</div>
+                    <div class="fs-3 fw-bold">@ViewBag.UsersCount</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <div class="text-muted small">Оголошення</div>
+                    <div class="fs-3 fw-bold">@ViewBag.AdvertisementsCount</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <div class="text-muted small">Категорії</div>
+                    <div class="fs-3 fw-bold">@ViewBag.CategoriesCount</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <div class="text-muted small">Фото</div>
+                    <div class="fs-3 fw-bold">@ViewBag.ImagesCount</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2 mb-4">
+        <a class="btn btn-success" asp-controller="Admin" asp-action="Advertisements">
+            Усі оголошення
+        </a>
+        <a class="btn btn-outline-success" asp-controller="Admin" asp-action="Users">
+            Користувачі
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white">
+            <h2 class="h5 mb-0">Останні оголошення</h2>
+        </div>
+        <div class="card-body p-0">
+            @if (Model == null || !Model.Any())
+            {
+                <div class="p-4 text-muted">Оголошень поки немає.</div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Назва</th>
+                                <th>Автор</th>
+                                <th>Категорія</th>
+                                <th>Ціна</th>
+                                <th>Дата</th>
+                                <th class="text-end">Дії</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var ad in Model)
+                            {
+                                <tr>
+                                    <td>@ad.Title</td>
+                                    <td>@(ad.Author?.Username ?? "Невідомо")</td>
+                                    <td>@(ad.Category?.Name ?? "Без категорії")</td>
+                                    <td>@ad.Price грн</td>
+                                    <td>@ad.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                                    <td class="text-end">
+                                        <a class="btn btn-sm btn-outline-secondary"
+                                           asp-controller="Advertisements"
+                                           asp-action="Details"
+                                           asp-route-id="@ad.Id">
+                                            Перегляд
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</section>

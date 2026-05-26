@@ -1,0 +1,75 @@
+@model List<CourseProject.Domain.Models.RegisteredUser>
+
+@{
+    ViewData["Title"] = "Користувачі";
+}
+
+<section class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-1">Користувачі</h1>
+            <p class="text-muted mb-0">Список зареєстрованих користувачів сайту.</p>
+        </div>
+        <a class="btn btn-outline-secondary" asp-controller="Admin" asp-action="Index">
+            Назад
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            @if (Model == null || !Model.Any())
+            {
+                <div class="p-4 text-muted">Користувачів поки немає.</div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Логін</th>
+                                <th>Ім'я</th>
+                                <th>Email</th>
+                                <th>Телефон</th>
+                                <th>Оголошень</th>
+                                <th class="text-end">Дії</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var user in Model)
+                            {
+                                <tr>
+                                    <td>@user.Id</td>
+                                    <td>@user.Username</td>
+                                    <td>@user.Name</td>
+                                    <td>@user.Email</td>
+                                    <td>@user.PhoneNumber</td>
+                                    <td>@(user.Advertisements?.Count ?? 0)</td>
+                                    <td class="text-end">
+                                        <form asp-controller="Admin"
+                                              asp-action="DeleteUser"
+                                              asp-route-id="@user.Id"
+                                              method="post"
+                                              class="d-inline"
+                                              onsubmit="return confirm('Видалити користувача @user.Username разом з усіма його оголошеннями?');">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                Видалити
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</section>

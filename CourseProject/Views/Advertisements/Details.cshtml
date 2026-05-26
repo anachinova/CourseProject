@@ -1,0 +1,133 @@
+﻿@model CourseProject.Domain.Models.Advertisement
+
+@{
+    ViewData["Title"] = Model.Title;
+
+    var images = Model.Images != null && Model.Images.Any()
+        ? Model.Images.ToList()
+        : new List<CourseProject.Domain.Models.AdvertisementImage>();
+}
+
+<div class="container details-page">
+    <div class="details-layout">
+        <div class="details-gallery-card">
+            @if (images.Any())
+            {
+                <div id="advertisementCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        @for (int i = 0; i < images.Count; i++)
+                        {
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img src="@images[i].Path"
+                                     class="d-block w-100 details-main-image"
+                                     alt="@Model.Title" />
+                            </div>
+                        }
+                    </div>
+
+                    @if (images.Count > 1)
+                    {
+                        <button class="carousel-control-prev"
+                                type="button"
+                                data-bs-target="#advertisementCarousel"
+                                data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Попереднє</span>
+                        </button>
+
+                        <button class="carousel-control-next"
+                                type="button"
+                                data-bs-target="#advertisementCarousel"
+                                data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Наступне</span>
+                        </button>
+                    }
+                </div>
+
+                @if (images.Count > 1)
+                {
+                    <div class="details-thumbnails">
+                        @for (int i = 0; i < images.Count; i++)
+                        {
+                            <button type="button"
+                                    data-bs-target="#advertisementCarousel"
+                                    data-bs-slide-to="@i"
+                                    class="details-thumbnail @(i == 0 ? "active" : "")">
+                                <img src="@images[i].Path" alt="Фото @(i + 1)" />
+                            </button>
+                        }
+                    </div>
+                }
+            }
+            else
+            {
+                <img src="~/images/ad-phone.jpg"
+                     class="details-main-image"
+                     alt="@Model.Title" />
+            }
+        </div>
+
+        <div class="details-info-card">
+            <div class="details-header">
+                <h1>@Model.Title</h1>
+                <p class="details-price">@Model.Price грн</p>
+            </div>
+
+            <div class="details-meta">
+                <div>
+                    <span class="meta-label">Категорія</span>
+                    <span class="meta-value">@(Model.Category?.Name ?? "Без категорії")</span>
+                </div>
+
+                <div>
+                    <span class="meta-label">Місто</span>
+                    <span class="meta-value">@Model.City</span>
+                </div>
+
+                <div>
+                    <span class="meta-label">Дата публікації</span>
+                    <span class="meta-value">@Model.CreatedAt.ToString("dd.MM.yyyy")</span>
+                </div>
+            </div>
+
+            <hr />
+
+            <div class="details-section">
+                <h3>Опис</h3>
+                <p class="details-description">
+                    @Model.Description
+                </p>
+            </div>
+
+            <div class="seller-box">
+                <h4>Продавець</h4>
+
+                <p class="seller-name">
+                    @(Model.Author?.Username ?? "Користувач")
+                </p>
+
+                @if (!string.IsNullOrWhiteSpace(Model.Author?.PhoneNumber))
+                {
+                    <button type="button"
+                            class="btn btn-success w-100"
+                            onclick="this.innerText='@Model.Author.PhoneNumber'">
+                        Показати телефон
+                    </button>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-success w-100" disabled>
+                        Телефон не вказано
+                    </button>
+                }
+            </div>
+
+            <a class="btn btn-outline-secondary mt-3"
+               asp-controller="Home"
+               asp-action="Index">
+                Назад до оголошень
+            </a>
+        </div>
+    </div>
+</div>

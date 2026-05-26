@@ -1,0 +1,90 @@
+﻿@model List<CourseProject.Domain.Models.Advertisement>
+
+@{
+    ViewData["Title"] = "Мої оголошення";
+}
+
+<div class="container my-ads-page">
+    <div class="page-header">
+        <div>
+            <h1>Мої оголошення</h1>
+            <p>Керуйте своїми опублікованими оголошеннями.</p>
+        </div>
+
+        <a class="btn btn-success" asp-controller="Advertisements" asp-action="Create">
+            Додати оголошення
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="empty-state">
+            <h3>У вас ще немає оголошень</h3>
+            <p>Створіть перше оголошення, щоб воно зʼявилося тут.</p>
+
+            <a class="btn btn-success" asp-controller="Advertisements" asp-action="Create">
+                Додати оголошення
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="my-ads-list">
+            @foreach (var ad in Model)
+            {
+                <div class="my-ad-item">
+                    @{
+                        var firstImage = ad.Images != null && ad.Images.Any()
+                            ? ad.Images.First().Path
+                            : "/images/ad-phone.jpg";
+                    }
+
+                    <img src="@firstImage" alt="@ad.Title" />
+
+                    <div class="my-ad-content">
+                        <h3>@ad.Title</h3>
+
+                        <p>
+                            @ad.City
+                            @if (ad.Category != null)
+                            {
+                                <span> · @ad.Category.Name</span>
+                            }
+                        </p>
+
+                        <strong>@ad.Price грн</strong>
+                    </div>
+
+                    <div class="my-ad-actions">
+                        <a class="btn btn-outline-success btn-sm"
+                           asp-controller="Advertisements"
+                           asp-action="Edit"
+                           asp-route-id="@ad.Id">
+                            Редагувати
+                        </a>
+
+                        <form asp-controller="Advertisements"
+                              asp-action="Delete"
+                              asp-route-id="@ad.Id"
+                              method="post"
+                              style="display:inline;"
+                              onsubmit="return confirm('Ви точно хочете видалити це оголошення?');">
+                            @Html.AntiForgeryToken()
+
+                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                Видалити
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
